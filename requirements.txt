@@ -1,0 +1,77 @@
+# ============================================================
+# ZeroVault Nexus — ml-anomaly-service
+# Python 3.12 / 3.13
+# Install: pip install -r requirements.txt --break-system-packages
+# (or, better: inside a venv — see setup notes at bottom)
+# ============================================================
+
+# --- API framework ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+
+# --- Core ML / data ---
+scikit-learn==1.6.1
+pandas==2.2.3
+numpy==2.2.1
+scipy==1.15.0
+
+# --- Deep learning (autoencoder) ---
+torch==2.5.1
+torchvision==0.20.1
+
+# --- Explainability (SHAP for IsoForest, gradient attribution for AE) ---
+shap==0.46.0
+captum==0.7.0
+
+# --- Concept drift detection (§3.3 — human/agent baseline drift) ---
+river==0.22.0
+menelaus==0.2.0
+
+# --- Feature engineering / cyclic encoding utils ---
+scikit-learn-extra==0.3.0
+category-encoders==2.6.4
+
+# --- Redis / Valkey client (Streams consumer) ---
+redis==5.2.1
+
+# --- MongoDB driver ---
+pymongo==4.10.1
+motor==3.6.0
+
+# --- Auth / crypto (workload identity verification, JWE inspection) ---
+python-jose[cryptography]==3.3.0
+cryptography==44.0.0
+pyspiffe==0.3.1
+
+# --- Post-quantum crypto research branch (ML-KEM / ML-DSA, §research/post-quantum) ---
+liboqs-python==0.12.0
+
+# --- Synthetic data generation (scripts/) ---
+faker==33.1.0
+
+# --- LLM/RAG audit-log reasoning service (§3.4, audit-ledger explain endpoint) ---
+anthropic==0.42.0
+langchain==0.3.14
+langchain-anthropic==0.3.1
+
+# --- Observability ---
+prometheus-client==0.21.1
+opentelemetry-api==1.29.0
+opentelemetry-sdk==1.29.0
+opentelemetry-instrumentation-fastapi==0.50b0
+
+# --- Testing ---
+pytest==8.3.4
+pytest-asyncio==0.25.0
+pytest-cov==6.0.0
+httpx==0.28.1
+
+# --- Linting / formatting ---
+black==24.10.0
+flake8==7.1.1
+mypy==1.14.0
+
+# --- Env / config management ---
+python-dotenv==1.0.1

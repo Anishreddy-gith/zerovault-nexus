@@ -1,0 +1,74 @@
+services:
+  mongo:
+    image: mongo:8.3
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:?set-in-dotenv}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:?set-in-dotenv}
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - zerovault
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  valkey:
+    image: valkey/valkey:8.0-alpine
+    restart: unless-stopped
+    command: valkey-server --appendonly yes --notify-keyspace-events Ex
+    ports:
+      - "6379:6379"
+    volumes:
+      - valkey_data:/data
+    networks:
+      - zerovault
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  opa:
+    image: openpolicyagent/opa:1.4.2-static
+    restart: unless-stopped
+    command: run --server --addr=0.0.0.0:8181 /policies
+    ports:
+      - "8181:8181"
+    volumes:
+      - ./infra/opa:/policies:ro
+    networks:
+      - zerovault
+  prometheus:
+    image: prom/prometheus:v3.2.1
+    restart: unless-stopped
+    command: --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - zerovault
+  grafana:
+    image: grafana/grafana:11.5.2
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-this-local-grafana-password}
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - zerovault
+volumes:
+  mongo_data:
+  valkey_data:
+  prometheus_data:
+  grafana_data:
+networks:
+  zerovault:
+    driver: bridge

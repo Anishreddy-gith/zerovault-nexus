@@ -116,22 +116,13 @@ ZeroVault Nexus is a seven-layer system. Every request traverses the API Gateway
 
 ### Local Development
 
-```bash
-# Clone the repo
+```powershell
 git clone https://github.com/<your-username>/zerovault-nexus.git
-cd zerovault-nexus
-
-# Install dependencies (monorepo, pnpm workspaces)
-pnpm install
-
-# Spin up the full stack (MongoDB, Valkey, API, ML service, OPA, Grafana, Prometheus)
+Set-Location zerovault-nexus
+Copy-Item .env.example .env
+corepack pnpm install
 docker compose up -d
-
-# Run the API server in dev mode
-pnpm --filter api dev
-
-# Run the dashboard
-pnpm --filter dashboard dev
+corepack pnpm --filter api-gateway exec tsx src/server.ts
 ```
 
 The dashboard will be available at `http://localhost:5173`, the API at `http://localhost:4000`.
